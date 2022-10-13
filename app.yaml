@@ -1,0 +1,32 @@
+# this is the version of YAML we are using with the Kubernetes API
+apiVersion: apps/v1
+# this kind is the type of Kubernetes resource we are using
+# a deployment is when we run code on a server
+kind: Deployment
+# metadata is information related to the object we created in Kubernetes
+metadata:
+# the name here is the name of our deployment
+  name: stedi-corbin
+spec:
+# replicas refers to the number of pods we deploy
+  replicas: 1
+# a selector is a route to my pod
+  selector:
+# match labels are a label for my selector
+    matchLabels:
+# app is a specific kind of label for my pod
+      app: stedi-corbin
+# the template describes all the features of my pod  
+  template:
+# metadata provides labels for my template
+    metadata:
+      labels:
+        app: stedi-corbin
+# the spec refers to the specification of my containers in my pod
+    spec:
+# containers can have one or more Docker containers in the pod
+      containers:
+# the name of the container is specified below
+        - name: stedi-corbin
+# the image is a prebuilt file containing the operating system
+          image: nginx
