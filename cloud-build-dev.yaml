@@ -45,7 +45,7 @@ steps:
       - 'stedi-corbin'
       - '--replicas=0'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-east1-b'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
 
       # This step deploys the application in Kubernetes
@@ -54,7 +54,7 @@ steps:
       - run
       - --filename=app.yaml
       - --image=gcr.io/$PROJECT_ID/stedi-corbin:$SHORT_SHA
-      - --location=us-east1-b
+      - --location=us-central1-c
       - --cluster=cluster-1
 
   # This step scales up the stedi pod
@@ -66,5 +66,5 @@ steps:
       - 'stedi-corbin'
       - '--replicas=1'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-east1-b'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
