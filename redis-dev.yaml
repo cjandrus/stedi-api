@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-stedi-dev
+  name: redis-stedi-dev-corbin
 spec:
   ports:
     - port: 6379
       name: redis
   clusterIP: None
   selector:
-    app: redis-stedi-dev
+    app: redis-stedi-dev-corbin
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis-stedi-dev
+  name: redis-stedi-dev-corbin
 spec:
   selector:
     matchLabels:
-      app: redis-stedi-dev  # has to match .spec.template.metadata.labels
+      app: redis-stedi-dev-corbin  # has to match .spec.template.metadata.labels
   serviceName: easy-rent-dev-redis
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis-stedi-dev  # has to match .spec.selector.matchLabels
+        app: redis-stedi-dev-corbin  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: easy-rent-dev-redis
+        - name: easy-rent-dev-redis-corbin
           image: redis:3.2-alpine
           imagePullPolicy: Always
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
@@ -40,11 +40,11 @@ spec:
                 name: redis-secrets-dev
                 key: REDIS_PASS
           volumeMounts:
-            - name: redis-dev-volume
+            - name: redis-dev-volume-corbin
               mountPath: /data
   volumeClaimTemplates:
   - metadata:
-      name: redis-dev-volume
+      name: redis-dev-volume-corbin
     spec:
       accessModes:
         - ReadWriteOnce
