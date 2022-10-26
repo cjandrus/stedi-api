@@ -26,18 +26,31 @@ spec:
         app: redis-stedi-dev-corbin  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: easy-rent-dev-redis-corbin
-          image: redis:3.2-alpine
+        - name: redis-stedi-dev-corbin
+          image: redis:7.0.5-alpine
           imagePullPolicy: Always
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
             - containerPort: 6379
               name: redis
+          resources:
+                # limits represent the max amount of cpu and memory that can be used by the pod
+            limits:
+                # cpu is the max amount of cpu that can be used by the pod
+              cpu: ".125"
+                # memory is the max amount of memory that can be used by the pod
+              memory: "500Mi"
+                # requests is the minimum amount of compute resources used by the pod
+            requests:
+                # cpu is the minimum amount of cpu the pod needs to run
+              cpu: ".125"
+                # memory is the minimum amount of memory the pod needs to run
+              memory: "250Mi"
           env:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: redis-secrets-dev
+                name: redis-secrets-dev-corbin
                 key: REDIS_PASS
           volumeMounts:
             - name: redis-dev-volume-corbin
