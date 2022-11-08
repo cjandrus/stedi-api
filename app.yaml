@@ -57,7 +57,7 @@ spec:
 # port defines the port to use when doing the http request
               port: 4567
 # initialdelayseconds tells kubernetes to wait before doing a request
-            initialDelaySeconds: 3
+            initialDelaySeconds: 10
 # periodSeconds tells Kubernetes how often to check health
             periodSeconds: 3
 ---
