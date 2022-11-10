@@ -84,3 +84,39 @@ spec:
     - port: 80
 # target port is the port the pod listens on inside kubernetes
       targetPort: 4567
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: stedi-ingress-corbin
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: stedi-corbin
+    networking.gke.io/managed-certificates: stedi-certificate-corbin
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.class: "gce"
+spec: 
+  defaultBackend:
+    service:
+      name: stedi-nodeport-corbin
+      port:
+        number: 80
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: stedi-certificate-corbin
+spec:
+  domains:
+    - stedicorbin.cit262.com
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stedi-nodeport-corbin
+spec:
+  selector:
+    app: stedi-corbin
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 4567
