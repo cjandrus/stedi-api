@@ -30,6 +30,18 @@ spec:
         - name: stedi-corbin
 # the image is a prebuilt file containing the operating system
           image: gcr.io/team-fire262/stedi-corbin
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secrets-dev-corbin
+                  key: REDIS_PASS
+            - name: REDIS_HOST
+              value: "redis-stedi-dev-corbin"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
 # the ports is a list of tcp ports the pod listens to:          
           ports:
 # the container port is a specific port the pod listens on:
