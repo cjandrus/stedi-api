@@ -1,0 +1,80 @@
+steps:
+
+  steps:
+    # This step runs the unit tests on the app
+    #- name: 'python:3.7-slim'
+    #  id: Test
+    #  entrypoint: /bin/sh
+    #  args:
+    #  - -c
+    #  - 'pip install flask && python test_app.py -v'
+    
+    # This step deploys the dev application in Kubernetes
+    - name: 'gcr.io/cloud-builders/gke-deploy'
+      id: Deploy
+      args:
+      - run
+      - --filename=manifest.yaml
+      - --image=gcr.io/$PROJECT_ID/_____________:latest
+      - --location=us-east1-b
+      - --output=/tmp/outputdev
+      - --cluster=cluster-1  
+    
+    # This step runs the ConstellationTests Image 
+    # The PROJECT_ID variable is automatically
+    # replaced by Cloud Build.
+    - name: 'gcr.io/cloud-builders/docker'
+      id: run
+      env:
+      - 'NODE_ENV=production'
+      args:
+      - 'run'
+      - 'gcr.io/$PROJECT_ID/constellationautotest:latest'
+      - 'npm'
+      - 'run'
+      - 'test-prod'
+    
+    
+    # This step deploys the stage application in Kubernetes
+    - name: 'gcr.io/cloud-builders/gcloud'
+      args:
+       - builds
+       - submit
+       - --config
+       - cloud-build-prod.yaml
+       - --substitutions
+       - _SHORT_SHA=$SHORT_SHA
+       - .
+
+  # This step stops the stedi pod
+    - name: 'gcr.io/cloud-builders/kubectl'
+      id: Stop Pod
+      args:
+        - 'scale'
+        - 'deploy'
+        - 'stedi-corbin-prod'
+        - '--replicas=0'
+      env:
+        - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+        - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+
+      # This step deploys the application in Kubernetes
+    - name: 'gcr.io/cloud-builders/gke-deploy'
+      args:
+        - run
+        - --filename=app.yaml
+        - --image=gcr.io/$PROJECT_ID/stedi-corbin-prod:$SHORT_SHA
+        - --location=us-central1-c
+        - --cluster=cluster-1
+
+  # This step scales up the stedi pod
+    - name: 'gcr.io/cloud-builders/kubectl'
+      id: Start Pod
+      args:
+        - 'scale'
+        - 'deploy'
+        - 'stedi-corbin-prod'
+        - '--replicas=1'
+      env:
+        - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+        - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
