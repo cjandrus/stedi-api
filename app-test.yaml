@@ -107,16 +107,11 @@ metadata:
     kubernetes.io/ingress.allow-http: "false"
     kubernetes.io/ingress.class: "gce"
 spec: 
-  rules:
-    - http:
-        paths:
-        - path: /test
-          pathType: ImplementationSpecific
-          backend:
-            service:
-              name: stedi-api-test
-              port:
-                number: 80
+  defaultBackend:
+    service:
+      name: stedi-nodeport-test
+      port:
+        number: 80
 ---
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
