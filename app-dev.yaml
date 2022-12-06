@@ -100,7 +100,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: stedi-ingress-corbin-dev
+  name: stedi-ingress-corbin
   annotations:
     kubernetes.io/ingress.global-static-ip-name: stedi-corbin
     networking.gke.io/managed-certificates: stedi-certificate-corbin
