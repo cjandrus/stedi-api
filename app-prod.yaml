@@ -6,7 +6,7 @@ kind: Deployment
 # metadata is information related to the object we created in Kubernetes
 metadata:
 # the name here is the name of our deployment
-  name: stedi-corbin
+  name: stedi-corbin-prod
 spec:
 # replicas refers to the number of pods we deploy
   replicas: 1
@@ -15,19 +15,19 @@ spec:
 # match labels are a label for my selector
     matchLabels:
 # app is a specific kind of label for my pod
-      app: stedi-corbin
+      app: stedi-corbin-prod
 # the template describes all the features of my pod  
   template:
 # metadata provides labels for my template
     metadata:
       labels:
-        app: stedi-corbin
+        app: stedi-corbin-prod
 # the spec refers to the specification of my containers in my pod
     spec:
 # containers can have one or more Docker containers in the pod
       containers:
 # the name of the container is specified below
-        - name: stedi-corbin
+        - name: stedi-corbin-prod
 # the image is a prebuilt file containing the operating system
           image: gcr.io/team-fire262/stedi-corbin
           env:
@@ -100,18 +100,23 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: stedi-ingress-corbin
+  name: stedi-ingress-corbin-prod
   annotations:
     kubernetes.io/ingress.global-static-ip-name: stedi-corbin
     networking.gke.io/managed-certificates: stedi-certificate-corbin
     kubernetes.io/ingress.allow-http: "false"
     kubernetes.io/ingress.class: "gce"
 spec: 
-  defaultBackend:
-    service:
-      name: stedi-nodeport-corbin
-      port:
-        number: 80
+  rules:
+    - http:
+        paths:
+        - path: /prod
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: stedi-api-prod
+              port:
+                number: 80
 ---
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
@@ -127,7 +132,7 @@ metadata:
   name: stedi-nodeport-corbin
 spec:
   selector:
-    app: stedi-corbin
+    app: stedi-corbin-prod
   type: NodePort
   ports:
     - port: 80
