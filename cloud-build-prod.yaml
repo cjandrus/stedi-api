@@ -62,7 +62,7 @@ steps:
     - name: 'gcr.io/cloud-builders/gke-deploy'
       args:
         - run
-        - --filename=app.yaml
+        - --filename=app-prod.yaml
         - --image=gcr.io/$PROJECT_ID/stedi-corbin-prod:$SHORT_SHA
         - --location=us-central1-c
         - --cluster=cluster-1
