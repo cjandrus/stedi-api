@@ -21,20 +21,6 @@ steps:
       - --location=us-central1-c
       - --cluster=cluster-1
 
-# This step runs the ConstellationTests Image 
-# The PROJECT_ID variable is automatically
-# replaced by Cloud Build.
-  - name: 'gcr.io/cloud-builders/docker'
-    id: run
-    env:
-      - 'NODE_ENV=test'
-    args:
-      - 'run'
-      - 'gcr.io/$PROJECT_ID/constellationautotest:latest'
-      - 'npm'
-      - 'run'
-      - 'test-test'
-
   # This step scales up the stedi pod
   - name: 'gcr.io/cloud-builders/kubectl'
     id: Start Pod
